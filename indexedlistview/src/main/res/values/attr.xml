@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="IndexedListView">
+        <attr name="indexBar_margin" format="dimension" />
+        <attr name="indexBar_bgColor" format="color" />
+        <attr name="indexBar_isAtoZ" format="boolean" />
+        <attr name="section_textColor" format="color" />
+        <attr name="section_textSize" format="dimension" />
+        <attr name="section_textPadding" format="dimension" />
+        <attr name="preview_isShow" format="boolean"/>
+        <attr name="preview_bgColor" format="color"/>
+        <attr name="preview_padding" format="dimension" />
+        <attr name="preview_textColor" format="color" />
+        <attr name="preview_textSize" format="dimension" />
+    </declare-styleable>
+</resources>

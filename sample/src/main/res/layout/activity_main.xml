@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:zp="http://schemas.android.com/apk/res/cn.kq.indexedlistview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="cn.kq.sample.MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Hello World!"/>
+
+    <cn.kq.indexedlistview.IndexedListView
+        android:id="@+id/indexed_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fastScrollEnabled="true"/>
+<!--        zp:indexBar_isAtoZ="false"
+        zp:indexBar_bgColor="#9FFF8800"
+        zp:indexBar_margin="8dp"
+        zp:section_textPadding="8dp"
+        zp:section_textColor="@color/colorAccent"
+        zp:section_textSize="90sp"
+        zp:preview_padding="20dp"
+        zp:preview_textColor="@color/colorPrimary"
+        zp:preview_textSize="800sp"/>-->
+</LinearLayout>
