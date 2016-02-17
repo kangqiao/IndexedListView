@@ -1,0 +1,2 @@
+rootProject.name = 'indexedlistview'
+include ':sample', ':indexedlistview'
