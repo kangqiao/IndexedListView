@@ -30,7 +30,7 @@ public class IndexBarPainter {
     private static final int DEFAULT_PREVIEW_TEXT_COLOR = Color.BLACK;
     private static final int DEFAULT_PREVIEW_BG_COLOR = Color.parseColor("#28000000");
 
-    private boolean indexBarIsAtoZ;
+    private boolean indexBarIsAtoZ = false;
     private float indexBarMargin;
     private int indexBarBgColor;
 
@@ -86,7 +86,7 @@ public class IndexBarPainter {
         if (null != mAttrs) {
             TypedArray typedArray = mContext.obtainStyledAttributes(mAttrs, R.styleable.IndexedListView);
 
-            indexBarIsAtoZ = typedArray.getBoolean(R.styleable.IndexedListView_indexBar_isAtoZ, false);
+            indexBarIsAtoZ = typedArray.getBoolean(R.styleable.IndexedListView_indexBar_isAtoZ, indexBarIsAtoZ);
             isShowPreview = typedArray.getBoolean(R.styleable.IndexedListView_preview_isShow, true);
 
             indexBarMargin = typedArray.getDimension(R.styleable.IndexedListView_indexBar_margin, DEFAULT_INDEXBAR_MARGIN * mDensity);
@@ -102,7 +102,7 @@ public class IndexBarPainter {
             previewTextColor = typedArray.getColor(R.styleable.IndexedListView_preview_textColor, DEFAULT_PREVIEW_TEXT_COLOR);
 
         } else {
-            indexBarIsAtoZ = false;
+            //indexBarIsAtoZ = false;
             indexBarMargin = DEFAULT_INDEXBAR_MARGIN * mDensity;
             indexBarBgColor = DEFAULT_INDEXBAR_BGCOLOR;
 
@@ -238,18 +238,15 @@ public class IndexBarPainter {
             count = mSections.length;
         }
         float indexBarHeight = sectionSize * count;
-        if ((mListViewHeight - 2 * indexBarMargin) < indexBarHeight) {
+        if (0 < mListViewHeight && 0 < indexBarHeight && (mListViewHeight - 2 * indexBarMargin) < indexBarHeight) {
             indexBarMargin = 0;
             indexBarHeight = mListViewHeight - 2 * indexBarMargin;
             sectionSize = indexBarHeight / count;
             sectionTextPadding = sectionSize * 0.2f / 2;
             sectionTextSize = sectionSize * 0.8f;
             sectionTextPaint.setTextSize(sectionTextSize);
-        } else {
-            initAttrs();
-            initPaint();
-            indexBarHeight = sectionSize * count;
         }
+
         //初始化索引条背景区域
         indexBarRectF = new RectF(mListViewWidth - sectionSize - indexBarMargin
                 , (mListViewHeight - indexBarHeight) / 2
@@ -257,12 +254,13 @@ public class IndexBarPainter {
                 , (mListViewHeight - indexBarHeight) / 2 + indexBarHeight);
 
         float previewSizeMaxValue = Math.min(mListViewWidth, mListViewHeight);
-        if (previewSizeMaxValue < previewSize) {
+        if (0 < previewSizeMaxValue && previewSizeMaxValue < previewSize) {
             previewSize = previewSizeMaxValue * 0.2f;
             previewTextPadding = previewSize * 0.2f / 2;
             previewTextSize = previewSize * 0.8f;
             previewTextPaint.setTextSize(previewTextSize);
         }
+
         //初始化预览背景区域
         previewRectF = new RectF((mListViewWidth - previewSize) / 2
                 , (mListViewHeight - previewSize) / 2
@@ -287,28 +285,31 @@ public class IndexBarPainter {
         /**
          * Build {@link IndexBarPainter} give the current set of capabilities.
          */
-        public IndexBarPainter build() {
+        public void build() {
             mIndexBarPainter.initPaint();
-            mIndexBarPainter.onSizeChanged(mIndexBarPainter.mListViewWidth, mIndexBarPainter.mListViewHeight, 0, 0);
+            mIndexBarPainter.onSizeChanged(mIndexBarPainter.mListViewWidth, mIndexBarPainter.mListViewHeight, 0, 0);//???是否去掉
+        }
+
+        public IndexBarPainter getIndexBarPainter() {
             return mIndexBarPainter;
         }
 
-        public Builder setIndexBarIsAtoZ(boolean isAtoZ){
+        public Builder setIndexBarIsAtoZ(boolean isAtoZ) {
             mIndexBarPainter.indexBarIsAtoZ = isAtoZ;
             return this;
         }
 
-        public Builder setIndexBarMargin(int margin){
+        public Builder setIndexBarMargin(int margin) {
             mIndexBarPainter.indexBarMargin = dp2px(mIndexBarPainter.mContext, margin);
             return this;
         }
 
-        public Builder setIndexBarMargin(float margin){
+        public Builder setIndexBarMargin(float margin) {
             mIndexBarPainter.indexBarMargin = margin;
             return this;
         }
 
-        public Builder setIndexBarBgColor(int color){
+        public Builder setIndexBarBgColor(int color) {
             mIndexBarPainter.indexBarBgColor = color;
             return this;
         }
@@ -373,7 +374,7 @@ public class IndexBarPainter {
             return this;
         }
 
-        public Builder setOnSelectSectionListener(OnSelectSectionListener listener){
+        public Builder setOnSelectSectionListener(OnSelectSectionListener listener) {
             mIndexBarPainter.setOnSelectSectionListener(listener);
             return this;
         }

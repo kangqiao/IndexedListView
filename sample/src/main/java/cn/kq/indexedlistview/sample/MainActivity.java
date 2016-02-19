@@ -1,5 +1,6 @@
 package cn.kq.indexedlistview.sample;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<ItemStr> mItems;
     private IndexedListView mListView;
+    private IndexedListView mListView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,19 @@ public class MainActivity extends AppCompatActivity {
 
         mListView = (IndexedListView) findViewById(R.id.indexed_listView);
         mListView.setAdapter(mAdapter);
+
+        mListView2 = (IndexedListView) findViewById(R.id.indexed_listView2);
+        mListView2.getIndexBarBuilder()
+                .setIndexBarIsAtoZ(true)
+                .setIndexBarBgColor(this.getResources().getColor(R.color.indexBar_bg))
+                .setPreviewBgColor(this.getResources().getColor(R.color.preview_bg))
+                .setIndexBarMargin(5) //5dp
+                .setSectionTextSize(100)
+                .setPreviewTextPadding(30) //30dp
+                .setPreviewTextSize(800)
+                .build();
+        mListView2.setAdapter(mAdapter);
+
         mAdapter.setDataList(mItems);
     }
 
@@ -97,10 +112,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static class ItemStr implements IndexedListView.IndexKey{
+    public static class ItemStr implements IndexedListView.IndexKey {
         String item;
 
-        public ItemStr() {}
+        public ItemStr() {
+        }
 
         public ItemStr(String item) {
             this.item = item;

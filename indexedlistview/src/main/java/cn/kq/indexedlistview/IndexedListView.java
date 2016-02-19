@@ -42,7 +42,7 @@ public class IndexedListView extends ListView implements IndexBarPainter.OnSelec
     private void init(AttributeSet attrs) {
         if (mIsFastScrollEnabled) {
             mBuilder = new IndexBarPainter.Builder(getContext(), attrs);
-            mIndexBar = mBuilder.setOnSelectSectionListener(this).build();
+            mIndexBar = mBuilder.setOnSelectSectionListener(this).getIndexBarPainter();
         }
     }
 

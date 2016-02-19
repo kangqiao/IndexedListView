@@ -8,24 +8,32 @@
     android:orientation="vertical"
     tools:context="cn.kq.sample.MainActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Hello World!"/>
-
     <cn.kq.indexedlistview.IndexedListView
         android:id="@+id/indexed_listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fastScrollEnabled="true"/>
-<!--        zp:indexBar_isAtoZ="false"
+        android:layout_height="350dp"
+        android:layout_weight="1"
+        android:fastScrollEnabled="true"
+        zp:indexBar_isAtoZ="false"
         zp:indexBar_bgColor="#9FFF8800"
         zp:indexBar_margin="8dp"
         zp:section_textPadding="8dp"
         zp:section_textColor="@color/colorAccent"
-        zp:section_textSize="90sp"
+        zp:section_textSize="12sp"
         zp:preview_padding="20dp"
         zp:preview_textColor="@color/colorPrimary"
-        zp:preview_textSize="800sp"/>-->
+        zp:preview_textSize="30sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/colorAccent"/>
+
+    <cn.kq.indexedlistview.IndexedListView
+        android:id="@+id/indexed_listView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fastScrollEnabled="true"
+        android:layout_weight="1"
+        />
 </LinearLayout>
