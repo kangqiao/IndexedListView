@@ -8,6 +8,6 @@ A Indexed ListView for android
 ### How to use
 
 ```groovy
-compile 'cn.kq:indexedlistview:1.0.0'
+compile 'cn.kq:indexedlistview:1.0.1'
 ```
 
