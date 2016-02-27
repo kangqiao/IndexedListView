@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 
 /**
@@ -30,19 +29,18 @@ public class IndexBarPainter {
     private static final int DEFAULT_PREVIEW_TEXT_COLOR = Color.BLACK;
     private static final int DEFAULT_PREVIEW_BG_COLOR = Color.parseColor("#28000000");
 
-    private boolean indexBarIsAtoZ = false;
-    private float indexBarMargin;
-    private int indexBarBgColor;
+    float indexBarMargin;
+    int indexBarBgColor;
 
-    private float sectionTextPadding;
-    private float sectionTextSize;
-    private int sectionTextColor;
+    float sectionTextPadding;
+    float sectionTextSize;
+    int sectionTextColor;
 
-    private boolean isShowPreview;
-    private int previewBgColor;
-    private float previewTextPadding;
-    private float previewTextSize;
-    private int previewTextColor;
+    boolean isShowPreview;
+    int previewBgColor;
+    float previewTextPadding;
+    float previewTextSize;
+    int previewTextColor;
 
     private RectF indexBarRectF;
     private Paint indexBarBgPaint;
@@ -67,13 +65,13 @@ public class IndexBarPainter {
     private String[] mSections = null;
     private AttributeSet mAttrs;
     private Context mContext;
-    private OnSelectSectionListener mListener;
+    private OnSelectSectionInnerListener mListener;
 
-    public interface OnSelectSectionListener {
+    interface OnSelectSectionInnerListener {
         void onSelectSection(int section);
     }
 
-    private IndexBarPainter(Context context, AttributeSet attrs) {
+    IndexBarPainter(Context context, AttributeSet attrs) {
         mContext = context;
         mAttrs = attrs;
         mDensity = mContext.getResources().getDisplayMetrics().density;
@@ -86,7 +84,6 @@ public class IndexBarPainter {
         if (null != mAttrs) {
             TypedArray typedArray = mContext.obtainStyledAttributes(mAttrs, R.styleable.IndexedListView);
 
-            indexBarIsAtoZ = typedArray.getBoolean(R.styleable.IndexedListView_indexBar_isAtoZ, indexBarIsAtoZ);
             isShowPreview = typedArray.getBoolean(R.styleable.IndexedListView_preview_isShow, true);
 
             indexBarMargin = typedArray.getDimension(R.styleable.IndexedListView_indexBar_margin, DEFAULT_INDEXBAR_MARGIN * mDensity);
@@ -102,7 +99,6 @@ public class IndexBarPainter {
             previewTextColor = typedArray.getColor(R.styleable.IndexedListView_preview_textColor, DEFAULT_PREVIEW_TEXT_COLOR);
 
         } else {
-            //indexBarIsAtoZ = false;
             indexBarMargin = DEFAULT_INDEXBAR_MARGIN * mDensity;
             indexBarBgColor = DEFAULT_INDEXBAR_BGCOLOR;
 
@@ -118,7 +114,7 @@ public class IndexBarPainter {
         }
     }
 
-    private void initPaint() {
+    void initPaint() {
         //索引文字的绘制属性.
         sectionTextPaint = new Paint();
         sectionTextPaint.setColor(sectionTextColor);
@@ -217,15 +213,11 @@ public class IndexBarPainter {
         return (x >= indexBarRectF.left && y >= indexBarRectF.top && y <= indexBarRectF.top + indexBarRectF.height());
     }
 
-    public boolean isSectionTextAtoZ() {
-        return indexBarIsAtoZ;
-    }
-
     public void setSections(String[] sections) {
         mSections = sections;
     }
 
-    public void setOnSelectSectionListener(OnSelectSectionListener listener) {
+    public void setOnSelectSectionInnerListener(OnSelectSectionInnerListener listener) {
         mListener = listener;
     }
 
@@ -237,6 +229,8 @@ public class IndexBarPainter {
         if (null != mSections) {
             count = mSections.length;
         }
+
+        //设置索引条文本大小, 如果由于索引条高度越界会自动按ListView高度/索引项总数确定每个索引文本的大小.
         float indexBarHeight = sectionSize * count;
         if (0 < mListViewHeight && 0 < indexBarHeight && (mListViewHeight - 2 * indexBarMargin) < indexBarHeight) {
             indexBarMargin = 0;
@@ -253,6 +247,7 @@ public class IndexBarPainter {
                 , mListViewWidth - indexBarMargin
                 , (mListViewHeight - indexBarHeight) / 2 + indexBarHeight);
 
+        ///设置预览文本的大小, 如果越界, 会自动按ListView的长宽最小值的2:8设置预览文本的大小.
         float previewSizeMaxValue = Math.min(mListViewWidth, mListViewHeight);
         if (0 < previewSizeMaxValue && previewSizeMaxValue < previewSize) {
             previewSize = previewSizeMaxValue * 0.2f;
@@ -266,121 +261,5 @@ public class IndexBarPainter {
                 , (mListViewHeight - previewSize) / 2
                 , (mListViewWidth - previewSize) / 2 + previewSize
                 , (mListViewHeight - previewSize) / 2 + previewSize);
-    }
-
-    public static class Builder {
-        private final IndexBarPainter mIndexBarPainter;
-
-        /**
-         * Default constructor for Builder.
-         */
-        public Builder(Context context) {
-            this(context, null);
-        }
-
-        public Builder(Context context, AttributeSet attrs) {
-            mIndexBarPainter = new IndexBarPainter(context, attrs);
-        }
-
-        /**
-         * Build {@link IndexBarPainter} give the current set of capabilities.
-         */
-        public void build() {
-            mIndexBarPainter.initPaint();
-            mIndexBarPainter.onSizeChanged(mIndexBarPainter.mListViewWidth, mIndexBarPainter.mListViewHeight, 0, 0);//???是否去掉
-        }
-
-        public IndexBarPainter getIndexBarPainter() {
-            return mIndexBarPainter;
-        }
-
-        public Builder setIndexBarIsAtoZ(boolean isAtoZ) {
-            mIndexBarPainter.indexBarIsAtoZ = isAtoZ;
-            return this;
-        }
-
-        public Builder setIndexBarMargin(int margin) {
-            mIndexBarPainter.indexBarMargin = dp2px(mIndexBarPainter.mContext, margin);
-            return this;
-        }
-
-        public Builder setIndexBarMargin(float margin) {
-            mIndexBarPainter.indexBarMargin = margin;
-            return this;
-        }
-
-        public Builder setIndexBarBgColor(int color) {
-            mIndexBarPainter.indexBarBgColor = color;
-            return this;
-        }
-
-        public Builder setSectionTextPadding(int sectionTextPadding) {
-            mIndexBarPainter.sectionTextPadding = dp2px(mIndexBarPainter.mContext, sectionTextPadding);
-            return this;
-        }
-
-        public Builder setSectionTextPadding(float padding) {
-            mIndexBarPainter.sectionTextPadding = padding;
-            return this;
-        }
-
-        public Builder setSectionTextSize(int sectionTextSize) {
-            mIndexBarPainter.sectionTextSize = dp2px(mIndexBarPainter.mContext, sectionTextSize);
-            return this;
-        }
-
-        public Builder setSectionTextSize(float textSize) {
-            mIndexBarPainter.sectionTextSize = textSize;
-            return this;
-        }
-
-        public Builder setSectionTextColor(int sectionTextColor) {
-            mIndexBarPainter.sectionTextColor = sectionTextColor;
-            return this;
-        }
-
-        public Builder setIsShowPreview(boolean isShowPreview) {
-            mIndexBarPainter.isShowPreview = isShowPreview;
-            return this;
-        }
-
-        public Builder setPreviewBgColor(int previewBgColor) {
-            mIndexBarPainter.previewBgColor = previewBgColor;
-            return this;
-        }
-
-        public Builder setPreviewTextPadding(int previewTextPadding) {
-            mIndexBarPainter.previewTextPadding = dp2px(mIndexBarPainter.mContext, previewTextPadding);
-            return this;
-        }
-
-        public Builder setPreviewTextPadding(float padding) {
-            mIndexBarPainter.previewTextPadding = padding;
-            return this;
-        }
-
-        public Builder setPreviewTextSize(int previewTextSize) {
-            mIndexBarPainter.previewTextSize = dp2px(mIndexBarPainter.mContext, previewTextSize);
-            return this;
-        }
-
-        public Builder setPreviewTextSize(float textSize) {
-            mIndexBarPainter.previewTextSize = textSize;
-            return this;
-        }
-
-        public Builder setPreviewTextColor(int previewTextColor) {
-            mIndexBarPainter.previewTextColor = previewTextColor;
-            return this;
-        }
-
-        public Builder setOnSelectSectionListener(OnSelectSectionListener listener) {
-            mIndexBarPainter.setOnSelectSectionListener(listener);
-            return this;
-        }
-
-        private static float dp2px(Context context, int dp) {
-            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-        }
     }
 }

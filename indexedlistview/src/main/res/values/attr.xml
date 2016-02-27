@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="IndexedListView">
+        <attr name="indexBar_isShow" format="boolean" />
         <attr name="indexBar_margin" format="dimension" />
         <attr name="indexBar_bgColor" format="color" />
-        <attr name="indexBar_isAtoZ" format="boolean" />
+        <attr name="indexBar_isShowAll" format="boolean" />
         <attr name="section_textColor" format="color" />
         <attr name="section_textSize" format="dimension" />
         <attr name="section_textPadding" format="dimension" />

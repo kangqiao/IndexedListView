@@ -1,11 +1,14 @@
 package cn.kq.indexedlistview.sample;
 
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private List<ItemStr> mItems;
     private IndexedListView mListView;
     private IndexedListView mListView2;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,34 +84,81 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mListView = (IndexedListView) findViewById(R.id.indexed_listView);
-        mListView.setAdapter(mAdapter);
+        /*mListView = (IndexedListView) findViewById(R.id.indexed_listView);
+        mListView.setAdapter(mAdapter);*/
 
         mListView2 = (IndexedListView) findViewById(R.id.indexed_listView2);
-        mListView2.getIndexBarBuilder()
-                .setIndexBarIsAtoZ(true)
+        mListView2.getBuilder()
+                .setIsShowAll(true) //设置索引条是否全索引显示.
                 .setIndexBarBgColor(this.getResources().getColor(R.color.indexBar_bg))
                 .setPreviewBgColor(this.getResources().getColor(R.color.preview_bg))
-                .setIndexBarMargin(5) //5dp
-                .setSectionTextSize(100)
-                .setPreviewTextPadding(30) //30dp
-                .setPreviewTextSize(800)
+                .setIndexBarMargin(5) //设置索引条外边距5dp. 若按像素处理请使用float类型数据.
+                .setSectionTextSize(100)  //设置索引条文本字体大小, 如果由于索引条长度越界会自动按ListView高度/索引项总数确定每个索引文本的大小.
+                .setPreviewTextPadding(30) //设置预览文本字体内边距, 整数30dp.
+                .setPreviewTextSize(800) //设置预览文本字体的大小, 如果越界, 会自动按ListView的长宽最小值的2:8设置预览文本的大小.
                 .build();
         mListView2.setAdapter(mAdapter);
 
+        /*
+        //设置SectionIndexer创建者.
+        mListView2.setSectionIndexerCreator(new IndexedListView.SectionIndexerCreator() {
+            @Override
+            public SectionIndexer createSectionIndexer(ListAdapter adapter, boolean isShowAllSupportedSections) {
+                return new DefaultAlphabetIndexer(adapter, isShowAllSupportedSections);
+            }
+        });*/
+
         mAdapter.setDataList(mItems);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mListView2.getBuilder()
+                        .setShowIndexBar(false)  //设置不显示索引条.
+                        .build();
+            }
+        }, 3000);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mListView2.getBuilder()
+                        .setShowIndexBar(true)  //设置显示索引条.
+                        .setIndexBarBgColor(Color.argb(0, 0, 0, 0))  //设置索引条背景透明.
+                        .setSectionTextSize(12)  //设置索引文本字体大小.
+                        .setSectionTextColor(Color.RED)  //设置索引文本字体颜色.
+                        .setPreviewTextPadding(50)  //设置预览文本内边距.
+                        .setPreviewTextColor(Color.BLUE)  //设置预览文本字体颜色.
+                        .setIsShowAll(false)  //设置索引条是否全索引显示.
+                        .build(); //构建你的索引条.
+            }
+        }, 8000);
     }
 
     private class ViewHolder extends RecycleBaseAdapter.RecycleViewHolder<ItemStr> {
         TextView tvItem;
+        CardView cardLetter;
+        TextView tvLetter;
 
         public ViewHolder(View view, RecycleBaseAdapter<ItemStr> adapter) {
             super(view, adapter);
             tvItem = findView(R.id.tv_item_str);
+            cardLetter = findView(R.id.card_letter);
+            tvLetter = findView(R.id.tv_letter);
         }
 
         @Override
         protected void update(ItemStr record, int position) {
+            SectionIndexer indexer = mListView2.getSectionIndexer();
+            if (null != indexer) {
+                int section = indexer.getSectionForPosition(position);
+                if (position == indexer.getPositionForSection(section)) {
+                    cardLetter.setVisibility(View.VISIBLE);
+                    tvLetter.setText(record.getIndexKey());
+                } else {
+                    cardLetter.setVisibility(View.GONE);
+                }
+            }
             tvItem.setText(record.getItem());
         }
     }

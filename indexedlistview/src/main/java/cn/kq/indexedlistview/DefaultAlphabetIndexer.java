@@ -33,16 +33,16 @@ public class DefaultAlphabetIndexer implements SectionIndexer {
     private String[] mAlphabetArray;
 
     private ListAdapter mAdapter;
-    private boolean mIsAtoZ;
+    private boolean mIsShowAllSupportedSections;
 
-    public DefaultAlphabetIndexer(ListAdapter adapter, boolean isAtoZ) {
-        mIsAtoZ = isAtoZ;
+    public DefaultAlphabetIndexer(ListAdapter adapter, boolean isShowAll) {
+        mIsShowAllSupportedSections = isShowAll;
         mAdapter = adapter;
     }
 
     @Override
     public Object[] getSections() {
-        if(mIsAtoZ){
+        if(mIsShowAllSupportedSections){
             mAlphabetLength = ALPHABET.length();
             mAlphabetArray = new String[mAlphabetLength];
             for (int i = 0; i < mAlphabetLength; i++) {
@@ -72,6 +72,9 @@ public class DefaultAlphabetIndexer implements SectionIndexer {
     public int getSectionForPosition(int position) {
         int size = mAdapter.getCount();
         if (size > 0) {
+            if(null == mAlphabetArray || 1 < mAlphabetArray.length){
+                mAlphabetArray = (String[]) getSections();
+            }
             position = Math.max(0, Math.min(position, size - 1));
             Object item = mAdapter.getItem(position);
             String IndexKey = item instanceof IndexKey? ((IndexKey) item).getIndexKey(): item.toString();
@@ -90,6 +93,9 @@ public class DefaultAlphabetIndexer implements SectionIndexer {
      */
     @Override
     public int getPositionForSection(int section) {
+        if(null == mAlphabetArray || 1 < mAlphabetArray.length){
+            mAlphabetArray = (String[]) getSections();
+        }
         section = Math.max(0, Math.min(section, mAlphabetArray.length - 1));
         char sectionKey = mAlphabetArray[section].charAt(0);
         char itemKey;
