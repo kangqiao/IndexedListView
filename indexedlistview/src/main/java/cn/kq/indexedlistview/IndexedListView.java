@@ -77,15 +77,9 @@ public class IndexedListView extends ListView implements IndexBarPainter.OnSelec
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (isShowIndexBar()) {
+        if (isShown() && isShowIndexBar()) {
             mIndexBarPainter.draw(canvas);
         }
-    }
-
-    @Override
-    public void setVisibility(int visibility) {
-        super.setVisibility(visibility);
-        mIsShowIndexBar = isShown();
     }
 
     @Override
