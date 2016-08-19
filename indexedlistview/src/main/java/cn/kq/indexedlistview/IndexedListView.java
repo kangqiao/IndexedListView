@@ -83,6 +83,12 @@ public class IndexedListView extends ListView implements IndexBarPainter.OnSelec
     }
 
     @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        mIsShowIndexBar = isShown();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (isShowIndexBar() && mIndexBarPainter.onTouchEvent(ev)) {
             return true;

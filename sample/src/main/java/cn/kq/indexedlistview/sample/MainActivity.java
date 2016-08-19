@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        RecycleBaseAdapter<ItemStr> mAdapter = new RecycleBaseAdapter<ItemStr>() {
+        final RecycleBaseAdapter<ItemStr> mAdapter = new RecycleBaseAdapter<ItemStr>() {
             @Override
             protected RecycleViewHolder onCreateViewHolder(ViewGroup parent) {
                 View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_str_layout, parent, false);
@@ -113,20 +113,23 @@ public class MainActivity extends AppCompatActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mListView2.getBuilder()
+                /*mListView2.getBuilder()
                         .setShowIndexBar(false)  //设置不显示索引条.
-                        .build();
+                        .build();*/
+                mListView2.setVisibility(View.GONE);
             }
         }, 3000);
 
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mListView2.setVisibility(View.VISIBLE);
                 mListView2.getBuilder()
                         .setShowIndexBar(true)  //设置显示索引条.
                         .setIndexBarBgColor(Color.argb(0, 0, 0, 0))  //设置索引条背景透明.
                         .setSectionTextSize(12)  //设置索引文本字体大小.
-                        .setSectionTextColor(Color.RED)  //设置索引文本字体颜色.
+                        .setSectionTextColor(Color.GRAY)  //设置索引文本字体颜色.
+                        .setIsShowPreview(false)
                         .setPreviewTextPadding(50)  //设置预览文本内边距.
                         .setPreviewTextColor(Color.BLUE)  //设置预览文本字体颜色.
                         .setIsShowAll(false)  //设置索引条是否全索引显示.
